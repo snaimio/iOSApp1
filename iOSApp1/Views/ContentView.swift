@@ -30,7 +30,7 @@ struct ContentView: View {
     }
 }
 
-// Preview provider, shows a live preview in Xcode's canvas
+//  Preview provider, shows a live preview in Xcode's canvas
 
 #Preview {
     ContentView()

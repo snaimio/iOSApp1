@@ -29,8 +29,10 @@ struct TeamOrder {
     }
 }
 
-//  Note: In future assignments, I wish to expand this model to include:
-//  size (Small/Medium/Large)
-//  sugar amount (Int)
-//  isFavorite (Bool)
-//  timestamp (Date)
+/* =====================================================================
+     Note: In future assignments, wish to expand this model to include:
+             size (Small/Medium/Large)
+             sugar amount (Int)
+             isFavorite (Bool)
+             timestamp (Date)
+======================================================================== */
