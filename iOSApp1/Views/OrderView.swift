@@ -66,7 +66,7 @@ struct OrderView: View {
             // Currently just static text styled as a button
             // In a complete app, this would be a Button with an action
             
-            Text("Place Order Button")
+            Text("Place Order")
                 .font(.headline)
                 .foregroundColor(.white)        // White text on brown background
                 .frame(width: 250, height: 50)  // Fixed width and height
@@ -76,7 +76,7 @@ struct OrderView: View {
             // Placeholder for the "View Past Orders" button
             // Currently just static text, no action yet
             
-            Text("View Past Orders Button")
+            Text("View Past Orders")
                 .foregroundColor(.brown)        // Brown text (no background)
                 .padding(.top, 5)              // Extra space on top only
             
