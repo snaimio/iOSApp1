@@ -1,51 +1,77 @@
-//  The first screen users see when the app launches.
-//  Introduces the coffee run app and explains how to start ordering.
-
 import SwiftUI
 
 struct WelcomeView: View {
+    @Binding var selectedTab: Int
+    @State private var showHistory = false
+    @EnvironmentObject var orderHistory: OrderHistory
+    
     var body: some View {
-        
-        // VStack arranges views vertically (top to bottom)
-        // (spacing: 20) adds 20 points of space between each child view
-        
         VStack(spacing: 20) {
-
-            // Large coffee cup image (filled SF Symbol)
-            // This is the main visual element of the welcome screen
+            
+            // Header without page numbers (showPageNumbers: false)
+          
+            HeaderView(selectedTab: $selectedTab, titleText: "Welcome", showHistory: $showHistory, showPageNumbers: false)
+            
+            Spacer()
+            
+            // Large coffee cup icon, the main visual element
             
             Image(systemName: "cup.and.saucer.fill")
-                .font(.system(size: 80))    // Custom size, large but not overwhelming
-                .foregroundColor(.brown)    // Coffee theme color
+                .font(.system(size: 80))
+                .foregroundColor(Color.coffeeBrown)
             
-            // Main welcome title, warm and inviting
+            // App title
             
-            Text("Welcome to Team Coffee Run!")
-                .font(.largeTitle)              // Very large, bold font
-                .multilineTextAlignment(.center)  // Centers text if it wraps to multiple lines
-                .padding()                     // Adds space around the text (all sides)
+            Text("Team Coffee Run")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .foregroundColor(Color.coffeeBrown)
             
-            // Instruction text – tells user how to navigate
-            // The ← is a Unicode left arrow (simple, no extra image needed)
-            // ☕️ is a coffee emoji for visual appeal
+            // Tagline
             
-            Text("← Swipe left to start ordering ☕️")
-                .font(.title3)          // Medium-large font (smaller than title)
-                .foregroundColor(.gray)  // Subtle gray, less emphasis than main title
+            Text("Order together, save time")
+                .font(.title3)
+                .foregroundColor(.gray)
             
-            // Reassures user that each team member has their own page
+            Spacer()
             
-            Text("Each team member has their own order screen")
-                .font(.body)                  // Standard reading font
-                .foregroundColor(.secondary)    // System gray (adapts to light/dark mode)
-                .padding(.top)                // Extra space only at the top
+            // Get Started button, takes user to Alex's order screen (tab 1)
+  
+            Button(action: { selectedTab = 1 }) {
+                HStack {
+                    Text("Get Started")
+                    Image(systemName: "arrow.right.circle")
+                }
+                .font(.title2)
+                .foregroundColor(.white)
+                .padding(.horizontal, 30)
+                .padding(.vertical, 12)
+                .background(Color.coffeeBrown)
+                .cornerRadius(25)
+            }
+            
+            // History button, opens the history view as a sheet
+         
+            Button(action: { showHistory.toggle() }) {
+                HStack {
+                    Image(systemName: "clock")
+                    Text("Order History")
+                }
+                .font(.body)
+                .foregroundColor(Color.coffeeBrown)
+                .padding(.top, 10)
+            }
+            
+            Spacer()
+                .frame(height: 40)
         }
-        .padding()        // Adds padding around the entire VStack (space between content and screen edges)
+        .sheet(isPresented: $showHistory) {
+            HistoryView(showHistory: $showHistory)
+        }
     }
 }
 
-// Preview, shows the welcome screen in Xcode's canvas
-
 #Preview {
-    WelcomeView()
+    WelcomeView(selectedTab: .constant(0))
+        .environmentObject(OrderHistory())
 }

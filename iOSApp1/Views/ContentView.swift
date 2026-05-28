@@ -1,36 +1,49 @@
+
 //  Main entry point of the app's user interface.
-//  This file creates a tab view that allows swiping between screens.
+//  Creates a swipeable tab view similar to professor's HIITFit example
 
 import SwiftUI
 
 struct ContentView: View {
+    
+    // Tracks which page the user is on
+    
+    @State private var selectedTab = 0
+    
+    // Creates the data store that will be shared across all views
+    // StateObject means this is the owner of the data
+    
+    @StateObject private var orderHistory = OrderHistory()
+    
     var body: some View {
         
-        // TabView creates a container where each child view becomes a separate page
-        // Users can swipe left/right to navigate between pages
+        // TabView with swiping between pages
         
-        TabView {
-        
-            // First page: Welcome screen (introduces the app)
+        TabView(selection: $selectedTab) {
             
-            WelcomeView()
+            // First page is the welcome screen (tag 0)
             
-            // Creates 4 additional pages (one for each team member)
-            // ForEach repeats the OrderView 4 times (index values: 0, 1, 2, 3)
+            WelcomeView(selectedTab: $selectedTab)
+                .tag(0)
             
-            ForEach(0 ..< 4) { index in
-                OrderView(index: index)
+            // Creates one order screen for each team member (tags 1, 2, 3, 4)
+            
+            ForEach(OrderHistory.teamMembers.indices, id: \.self) { index in
+                OrderView(selectedTab: $selectedTab, index: index)
+                    .tag(index + 1)  // +1 because tag 0 is already used by Welcome
             }
         }
         
-        // PageTabViewStyle makes the tabs appear as full-screen swipeable pages
-        // indexDisplayMode: .never hides the default page dots at the bottom
+        // Makes the orderHistory available to all child views
+        // This was a bit confusing at first but I understand it now
+        
+        .environmentObject(orderHistory)
+        
+        // PageTabViewStyle makes it full screen swipeable, no dots at the bottom
         
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
     }
 }
-
-//  Preview provider, shows a live preview in Xcode's canvas
 
 #Preview {
     ContentView()

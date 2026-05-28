@@ -1,49 +1,72 @@
-//  Reusable header that appears at the top of each order screen.
-//  Displays four coffee-themed icons (SF Symbols) and the team member's name.
-
 import SwiftUI
 
 struct HeaderView: View {
     
-    // Property that stores the name of the current team member (e.g., "Alex's Order")
-    // This value is passed in when HeaderView is created
+    // Binding so this view can change the selected tab in ContentView
     
-    let memberName: String
+    @Binding var selectedTab: Int
+    let titleText: String
+    @Binding var showHistory: Bool
+    var showPageNumbers: Bool = true  // Welcome screen doesn't need the circles
+    let teamMembers = ["Alex", "Jordan", "Taylor", "Casey"]
+    
     var body: some View {
-        
-        // VStack arranges views vertically (top to bottom)
-        
-        VStack {
+        VStack(spacing: 12) {
             
-            // HStack arranges views horizontally (left to right)
+            // Title at the top, changes color to coffee brown
             
-            HStack {
-                
-                // Four SF Symbol images representing coffee/breakfast theme
-                
-                Image(systemName: "cup.and.saucer")
-                Image(systemName: "takeoutbag.and.cup.and.straw")
-                Image(systemName: "birthday.cake")
-                Image(systemName: "mug")
+            if showPageNumbers {
+                Text(titleText)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color.coffeeBrown)
+            } else {
+                Text("Welcome")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color.coffeeBrown)
             }
             
-            // Applys modifiers to the entire HStack
+            // Page number circles, tap to jump to any team member
+            // Professor used Image(systemName: "\(index).circle") but I used buttons
+            // Both work the same way, buttons give me more control
             
-            .font(.title2)
-            .foregroundColor(.brown)
-            
-            // Displays the team member's name (e.g., "Alex's Order")
-            
-            Text(memberName)
-                .font(.largeTitle)
+            if showPageNumbers {
+                HStack(spacing: 20) {
+                    ForEach(0..<teamMembers.count, id: \.self) { i in
+                        VStack(spacing: 4) {
+                            Button(action: {
+                                selectedTab = i + 1  // +1 because Welcome is tag 0
+                            }) {
+                                Text("\(i + 1)")
+                                    .font(.title2)
+                                    .fontWeight(selectedTab == i + 1 ? .bold : .regular)
+                                    .foregroundColor(selectedTab == i + 1 ? Color.coffeeBrown : .gray)
+                                    .frame(width: 40, height: 40)
+                                    .background(
+                                        Circle()
+                                            .fill(selectedTab == i + 1 ? Color.coffeeBrown.opacity(0.2) : Color.clear)
+                                    )
+                            }
+                            
+                            // Added names below the numbers so users know who is who
+                            
+                            Text(teamMembers[i])
+                                .font(.caption2)
+                                .foregroundColor(selectedTab == i + 1 ? Color.coffeeBrown : .gray)
+                        }
+                    }
+                }
+            }
         }
-        .padding()
+        .padding(.vertical, 10)
+        .background(Color.white)
     }
 }
 
-//  Preview with a sample member name
-//  .sizeThatFitsLayout makes preview fit content size
-
 #Preview(traits: .sizeThatFitsLayout) {
-    HeaderView(memberName: "Alex's Order")
+    
+    // Preview shows Alex's order page (tab 1)
+    
+    HeaderView(selectedTab: .constant(1), titleText: "Alex's Order", showHistory: .constant(false), showPageNumbers: true)
 }
